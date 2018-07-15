@@ -1,0 +1,33 @@
+<html>
+    <head>
+            <script
+            src="https://code.jquery.com/jquery-1.12.4.min.js"
+            integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+            crossorigin="anonymous"></script>
+            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/corejs-typeahead/1.2.1/bloodhound.min.js"></script>
+        <script type="text/javascript" src="https://twitter.github.io/typeahead.js/releases/latest/typeahead.bundle.js"></script>
+        
+    </head>
+    <body>
+        <div id="remote">
+            <input class="typeahead" type="text" placeholder="Product Name"/>
+        </div>
+        <script>
+            var products= new Bloodhound({
+                datumTokenizer: function(d) {
+                    return Bloodhound.tokenizers.whitespace(d.name)
+                },
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                remote: {
+                    url: '../shortsearch?name=%Query',
+                    wildcard: '%Query'
+                }
+            });
+            $('#remote .typeahead').typeahead(null, {
+                name: 'products',
+                displayKey: 'name',
+                source: products
+            })
+        </script>
+    </body>
+</html>

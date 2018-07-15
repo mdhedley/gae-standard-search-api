@@ -7,3 +7,4 @@ handlers:
   static_dir: static
 - url: /.*
   script: main.app
+instance_class: F4_1G

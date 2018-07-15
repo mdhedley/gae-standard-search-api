@@ -17,6 +17,7 @@ import logging
 import urllib2
 import json
 import zlib
+import time
 
 # [START imports]
 from flask import Flask, render_template, request
@@ -31,7 +32,7 @@ app = Flask(__name__)
 
 @app.route('/indexdocs')
 def index():
-    html = open('products.json','r').read()
+    html = get_file()
     products = json.loads(html)
     index = search.Index('products')
     #Should really batch here
@@ -56,6 +57,7 @@ def index():
             index.put(current_docs)
             current_docs = []
             count = 0
+            time.sleep(0.5) # Without safety quota lift need to slow this down
     print("Final Index!!")
     index.put(current_docs)
     return "Complete"
@@ -109,3 +111,8 @@ def server_error(e):
 
 
 
+def get_file():
+    request = urllib2.Request('https://raw.githubusercontent.com/BestBuyAPIs/open-data-set/master/products.json',headers={'accept-encoding':'gzip;q=0'})
+    file = urllib2.urlopen(request,timeout=60).read()
+    file_decompressed = zlib.decompress(file,16+zlib.MAX_WBITS)
+    return file_decompressed
